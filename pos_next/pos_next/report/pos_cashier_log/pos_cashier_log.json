@@ -1,0 +1,12 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2026-01-01",
+ "doctype": "Report",
+ "is_standard": "Yes",
+ "module": "POS Next",
+ "name": "POS Cashier Log",
+ "ref_doctype": "POS Cash Transaction",
+ "report_name": "POS Cashier Log",
+ "report_type": "Query Report"
+}

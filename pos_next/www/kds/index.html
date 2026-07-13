@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KDS - Kitchen Display System | POS Next</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#0F172A;color:#fff;min-height:100vh}
+    .kds-header{background:#1E293B;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.4);position:sticky;top:0;z-index:100}
+    .kds-header h1{font-size:18px;font-weight:900;letter-spacing:1px}
+    .kds-stats{display:flex;gap:12px}
+    .kds-stat{background:#0F172A;padding:6px 12px;border-radius:8px;font-size:12px}
+    .kds-stat span{font-weight:800;font-size:16px;margin-left:6px}
+    .kds-board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:14px}
+    .kds-column{background:#1E293B;border-radius:12px;padding:10px;min-height:80vh}
+    .kds-column h3{font-size:13px;text-transform:uppercase;letter-spacing:1px;padding-bottom:8px;border-bottom:2px solid #334155;margin-bottom:10px;display:flex;justify-content:space-between}
+    .kds-ticket{background:#fff;color:#1A202C;border-radius:10px;padding:10px;margin-bottom:10px;cursor:pointer;transition:.2s;border-left:6px solid #4299E1;position:relative}
+    .kds-ticket:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+    .kds-ticket.vip{border-left-color:#F56565;background:#FFF5F5}
+    .kds-ticket.urgent{border-left-color:#ED8936;animation:pulse 1.5s infinite}
+    .kds-ticket.new{border-left-color:#4299E1}
+    .kds-ticket.cooking{border-left-color:#ECC94B}
+    .kds-ticket.ready{border-left-color:#48BB78}
+    .kds-ticket.served{opacity:.5}
+    .kds-ticket-header{display:flex;justify-content:space-between;font-weight:800;font-size:13px;margin-bottom:6px}
+    .kds-aging{font-size:11px;padding:2px 6px;border-radius:10px;background:#EDF2F7}
+    .kds-aging.yellow{background:#FEFCBF;color:#744210}
+    .kds-aging.red{background:#FED7D7;color:#742A2A}
+    .kds-item{font-size:12px;padding:4px 0;border-bottom:1px dashed #EDF2F7;display:flex;justify-content:space-between}
+    .kds-item:last-child{border:none}
+    .kds-actions{display:flex;gap:6px;margin-top:8px}
+    .kds-btn{padding:5px 10px;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer}
+    .kds-btn.start{background:#4299E1;color:white}
+    .kds-btn.ready{background:#48BB78;color:white}
+    .kds-btn.serve{background:#805AD5;color:white}
+    .kds-btn.bump{background:#1A202C;color:white}
+    .kds-empty{padding:20px;text-align:center;color:#64748B;font-size:13px}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(237,137,54,.5)}50%{box-shadow:0 0 0 8px rgba(237,137,54,0)}}
+    .kds-filter-bar{padding:8px 14px;background:#1E293B;display:flex;gap:8px;align-items:center}
+    .kds-filter-bar select,.kds-filter-bar button{padding:6px 10px;border-radius:6px;border:none;background:#0F172A;color:#fff;font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="kds-header">
+    <h1>🍳 KDS - Kitchen Display | <span id="pos-profile-name">{{ pos_profile or 'All' }}</span></h1>
+    <div class="kds-stats">
+      <div class="kds-stat">New<span id="count-new">0</span></div>
+      <div class="kds-stat">Cooking<span id="count-cooking">0</span></div>
+      <div class="kds-stat">Ready<span id="count-ready">0</span></div>
+      <div class="kds-stat" style="background:#F56565">Avg Time<span id="avg-time">0m</span></div>
+      <div class="kds-stat" id="connection-status" style="background:#48BB78">● Online</div>
+    </div>
+  </div>
+  <div class="kds-filter-bar">
+    <label>POS Profile:</label>
+    <input id="pos-profile-input" value="{{ pos_profile or '' }}" placeholder="POS Profile" style="padding:6px 10px;border-radius:6px;border:none;background:#0F172A;color:#fff;">
+    <button onclick="fetchKOTs()">🔄 Refresh</button>
+    <button onclick="toggleSound()" id="sound-btn">🔊 Sound ON</button>
+    <button onclick="toggleFullscreen()">⛶ Fullscreen</button>
+    <span style="margin-left:auto;font-size:11px;color:#94A3B8;">Auto refresh <span id="refresh-sec">3</span>s | POS Next - Odoo Beating</span>
+  </div>
+  <div class="kds-board">
+    <div class="kds-column" id="col-new"><h3>New Orders <span id="col-new-count">0</span></h3><div class="kds-list" id="list-new"></div></div>
+    <div class="kds-column" id="col-cooking"><h3>🍳 Cooking <span id="col-cooking-count">0</span></h3><div class="kds-list" id="list-cooking"></div></div>
+    <div class="kds-column" id="col-ready"><h3>✅ Ready to Serve <span id="col-ready-count">0</span></h3><div class="kds-list" id="list-ready"></div></div>
+    <div class="kds-column" id="col-served"><h3>🏁 Served / Recent <span id="col-served-count">0</span></h3><div class="kds-list" id="list-served"></div></div>
+  </div>
+
+  <audio id="kds-beep" preload="auto"><source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg"></audio>
+
+  <script>
+    let pos_profile = new URLSearchParams(window.location.search).get('pos_profile') || "{{ pos_profile or '' }}";
+    let refreshInterval = 3000;
+    let soundEnabled = true;
+    let lastKOTCount = 0;
+    let kotsData = [];
+
+    function $(id){return document.getElementById(id);}
+
+    async function fetchKOTs(){
+        if (!pos_profile) {
+            pos_profile = $("pos-profile-input").value;
+            if (!pos_profile) {
+                $("list-new").innerHTML = '<div class="kds-empty">Enter POS Profile to load KDS</div>';
+                return;
+            }
+        }
+        try {
+            // Use frappe API via fetch (if logged in) - we use /api/method
+            const res = await fetch(`/api/method/pos_next.api.kds.get_kitchen_orders?pos_profile=${encodeURIComponent(pos_profile)}`, {credentials:"include"});
+            const json = await res.json();
+            if (json.message) {
+                kotsData = json.message;
+                renderKDS(kotsData);
+                $("connection-status").textContent = "● Online";
+                $("connection-status").style.background = "#48BB78";
+            }
+        } catch(e){
+            console.error(e);
+            $("connection-status").textContent = "● Offline";
+            $("connection-status").style.background = "#F56565";
+        }
+    }
+
+    function renderKDS(kots){
+        // Group by kot_status
+        const groups = { new: [], cooking: [], ready: [], served: [] };
+        let totalAging = 0;
+        kots.forEach(k=>{
+            const status = (k.kot_status||"").toLowerCase();
+            if (status.includes("sent") || status.includes("draft")) groups.new.push(k);
+            else if (status.includes("progress") || status.includes("cooking")) groups.cooking.push(k);
+            else if (status.includes("ready")) groups.ready.push(k);
+            else if (status.includes("served")) groups.served.push(k);
+            else groups.new.push(k);
+            totalAging += k.aging_minutes||0;
+        });
+
+        $("count-new").textContent = groups.new.length;
+        $("count-cooking").textContent = groups.cooking.length;
+        $("count-ready").textContent = groups.ready.length;
+        $("col-new-count").textContent = groups.new.length;
+        $("col-cooking-count").textContent = groups.cooking.length;
+        $("col-ready-count").textContent = groups.ready.length;
+        $("col-served-count").textContent = groups.served.length;
+        $("avg-time").textContent = kots.length ? Math.round(totalAging/kots.length)+"m" : "0m";
+
+        // Beep if new kot added
+        if (kots.length > lastKOTCount && soundEnabled) {
+            playBeep();
+        }
+        lastKOTCount = kots.length;
+
+        $("list-new").innerHTML = groups.new.map(renderTicket).join("") || '<div class="kds-empty">No new orders</div>';
+        $("list-cooking").innerHTML = groups.cooking.map(renderTicket).join("") || '<div class="kds-empty">No cooking</div>';
+        $("list-ready").innerHTML = groups.ready.map(renderTicket).join("") || '<div class="kds-empty">No ready orders</div>';
+        $("list-served").innerHTML = groups.served.slice(0,10).map(renderTicket).join("") || '<div class="kds-empty">No served</div>';
+
+        // Bind actions
+        document.querySelectorAll("[data-action]").forEach(btn=>{
+            btn.addEventListener("click", (e)=>{
+                e.stopPropagation();
+                const kot = e.target.getAttribute("data-kot");
+                const action = e.target.getAttribute("data-action");
+                handleAction(kot, action);
+            });
+        });
+    }
+
+    function renderTicket(kot){
+        const aging = kot.aging_minutes||0;
+        let agingClass = "aging";
+        let agingText = aging+"m";
+        if (aging>10) {agingClass="aging red";} else if (aging>5) {agingClass="aging yellow";}
+        const isVip = (kot.priority||"").toLowerCase()==="vip" || (kot.priority||"").toLowerCase()==="urgent";
+        const cls = isVip ? "vip" : (kot.kot_status||"").toLowerCase().includes("ready")?"ready": (kot.kot_status||"").toLowerCase().includes("progress")?"cooking":"new";
+        const items = (kot.items||[]).map(it=>`<div class="kds-item"><span><strong>${it.qty}x</strong> ${escapeHtml(it.item_name||it.item_code)} ${it.kot_notes?`<br><small style="color:#E53E3E;">NOTE: ${escapeHtml(it.kot_notes)}</small>`:''}</span><span style="font-size:10px;background:#EDF2F7;padding:2px 6px;border-radius:10px;">${it.kot_status||''}</span></div>`).join("");
+
+        let actions = "";
+        if (cls==="new") actions = `<div class="kds-actions"><button class="kds-btn start" data-action="In Progress" data-kot="${kot.name}">Start Cooking</button><button class="kds-btn bump" data-action="Cancelled" data-kot="${kot.name}">Cancel</button></div>`;
+        else if (cls==="cooking") actions = `<div class="kds-actions"><button class="kds-btn ready" data-action="Ready" data-kot="${kot.name}">Mark Ready</button></div>`;
+        else if (cls==="ready") actions = `<div class="kds-actions"><button class="kds-btn serve" data-action="Served" data-kot="${kot.name}">Served / Bump</button><button class="kds-btn start" data-action="In Progress" data-kot="${kot.name}">Back to Cooking</button></div>`;
+        else actions = `<div style="font-size:10px;color:#999;margin-top:6px;">Served at ${kot.served_time||''}</div>`;
+
+        return `<div class="kds-ticket ${cls}">
+            <div class="kds-ticket-header"><span>${escapeHtml(kot.table_label||kot.table||'TA') } - ${escapeHtml(kot.name)} ${isVip?'⭐VIP':''}</span><span class="${agingClass}">${agingText}</span></div>
+            <div style="font-size:11px;color:#718096;margin-bottom:6px;">${escapeHtml(kot.order_type||'')} | Guests: ${kot.guest_count||1} | ${kot.customer||''}<br>Order: ${kot.order_time||''} ${kot.remarks?`<br>Remark: ${escapeHtml(kot.remarks)}`:''}</div>
+            <div>${items}</div>
+            ${actions}
+        </div>`;
+    }
+
+    function escapeHtml(str){ if(!str) return ""; return String(str).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+
+    async function handleAction(kotName, status){
+        try {
+            const res = await fetch(`/api/method/pos_next.api.kds.update_kot_status`, {
+                method:"POST",
+                headers:{"Content-Type":"application/json", "X-Frappe-Site-Name": window.location.hostname},
+                credentials:"include",
+                body: JSON.stringify({kot_name: kotName, status: status})
+            });
+            const json = await res.json();
+            console.log(json);
+            fetchKOTs();
+        } catch(e){
+            alert("Failed to update KOT: "+e);
+        }
+    }
+
+    function playBeep(){
+        try {
+            const audio = $("kds-beep");
+            audio.currentTime = 0;
+            audio.play();
+        } catch(e){}
+    }
+
+    function toggleSound(){
+        soundEnabled = !soundEnabled;
+        $("sound-btn").textContent = soundEnabled ? "🔊 Sound ON" : "🔇 Sound OFF";
+    }
+
+    function toggleFullscreen(){
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+    }
+
+    // Socket realtime if frappe realtime available
+    try {
+        if (window.frappe && frappe.realtime) {
+            frappe.realtime.on("pos_next_kds_update", ()=> fetchKOTs());
+        }
+    } catch(e){}
+
+    // Init
+    if (pos_profile) {
+        $("pos-profile-input").value = pos_profile;
+        fetchKOTs();
+    }
+    setInterval(fetchKOTs, refreshInterval);
+
+    // Update refresh sec display
+    setInterval(()=>{$("refresh-sec").textContent = refreshInterval/1000;}, 1000);
+
+  </script>
+</body>
+</html>

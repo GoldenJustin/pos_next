@@ -1,0 +1,192 @@
+{
+ "actions": [],
+ "autoname": "format:KOT-{YYYY}-{#####}",
+ "creation": "2026-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "pos_profile",
+  "company",
+  "pos_invoice",
+  "table",
+  "order_type",
+  "kot_status",
+  "priority",
+  "guest_count",
+  "order_time",
+  "fired_time",
+  "ready_time",
+  "served_time",
+  "col_break_1",
+  "cashier",
+  "customer",
+  "section_break_items",
+  "items",
+  "section_break_meta",
+  "remarks",
+  "is_fired",
+  "offline_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "pos_profile",
+   "fieldtype": "Link",
+   "label": "POS Profile",
+   "options": "POS Profile",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "pos_invoice",
+   "fieldtype": "Link",
+   "label": "POS Invoice",
+   "options": "POS Invoice"
+  },
+  {
+   "fieldname": "table",
+   "fieldtype": "Link",
+   "label": "Table",
+   "options": "POS Table",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "order_type",
+   "fieldtype": "Select",
+   "label": "Order Type",
+   "options": "Dine In\nTakeaway\nDelivery\nDrive-Thru\nQuick",
+   "default": "Dine In",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "kot_status",
+   "fieldtype": "Select",
+   "label": "KOT Status",
+   "options": "Draft\nSent to Kitchen\nIn Progress\nReady\nServed\nCancelled",
+   "default": "Draft",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "label": "Priority",
+   "options": "Normal\nUrgent\nDelayed\nVIP",
+   "default": "Normal"
+  },
+  {
+   "fieldname": "guest_count",
+   "fieldtype": "Int",
+   "label": "Guest Count",
+   "default": "1"
+  },
+  {
+   "fieldname": "order_time",
+   "fieldtype": "Datetime",
+   "label": "Order Time"
+  },
+  {
+   "fieldname": "fired_time",
+   "fieldtype": "Datetime",
+   "label": "Fired Time"
+  },
+  {
+   "fieldname": "ready_time",
+   "fieldtype": "Datetime",
+   "label": "Ready Time"
+  },
+  {
+   "fieldname": "served_time",
+   "fieldtype": "Datetime",
+   "label": "Served Time"
+  },
+  {
+   "fieldname": "col_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cashier",
+   "fieldtype": "Link",
+   "label": "Cashier",
+   "options": "User"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "section_break_items",
+   "fieldtype": "Section Break",
+   "label": "Items"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "KOT Items",
+   "options": "POS KOT Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_meta",
+   "fieldtype": "Section Break",
+   "label": "Meta"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "is_fired",
+   "fieldtype": "Check",
+   "label": "Is Fired",
+   "default": "0"
+  },
+  {
+   "fieldname": "offline_id",
+   "fieldtype": "Data",
+   "label": "Offline ID",
+   "unique": 0
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "module": "POS Next",
+ "name": "POS KOT",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "write": 1,
+   "read": 1,
+   "role": "Sales User"
+  },
+  {
+   "create": 1,
+   "write": 1,
+   "read": 1,
+   "role": "Kitchen User"
+  }
+ ],
+ "sort_field": "modified",
+ "track_changes": 1
+}

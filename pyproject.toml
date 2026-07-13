@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pos-next"
+version = "2.0.0"
+description = "POS Next - Odoo-beating Super POS for ERPNext 15+ with Restaurant, KDS, KOT, Customer Display, Supermarket, Cash Ops, Offline & Premium Receipts"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+  {name = "POS Next Team"},
+]
+maintainers = [
+  {name = "POS Next"},
+]
+keywords = ["erpnext", "pos", "restaurant", "kds", "kot", "retail", "supermarket"]
+classifiers = [
+  "Framework :: Frappe",
+  "Programming Language :: Python :: 3",
+]
+dependencies = [
+  "frappe>=15.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-org/pos_next"
+Repository = "https://github.com/your-org/pos_next"
+
+[tool.setuptools.packages.find]
+include = ["pos_next*"]

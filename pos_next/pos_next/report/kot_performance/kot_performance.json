@@ -1,0 +1,12 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-01-01",
+ "doctype": "Report",
+ "is_standard": "Yes",
+ "module": "POS Next",
+ "name": "Kot Performance",
+ "ref_doctype": "POS Invoice",
+ "report_name": "Kot Performance",
+ "report_type": "Query Report"
+}

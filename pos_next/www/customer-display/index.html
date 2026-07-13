@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Customer Display - POS Next</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,sans-serif;background:linear-gradient(135deg,#5A67D8,#805AD5);min-height:100vh;color:#fff;overflow:auto}
+    .cd-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.15);backdrop-filter:blur(10px)}
+    .cd-header h1{font-size:20px;font-weight:900}
+    .cd-main{max-width:960px;margin:20px auto;padding:0 12px}
+    #customer-display-root{min-height:70vh}
+    .cd-footer{position:fixed;bottom:0;left:0;right:0;padding:8px 16px;background:rgba(0,0,0,.2);text-align:center;font-size:11px}
+    .cart-line{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed rgba(0,0,0,.1);font-size:14px;color:#1A202C}
+    .cart-total{font-size:28px;font-weight:900;display:flex;justify-content:space-between;margin-top:12px;color:#1A202C}
+  </style>
+</head>
+<body>
+  <div class="cd-header">
+    <h1>🖥️ Customer Display <span style="opacity:.7;font-size:12px;">POS Next</span></h1>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span id="pos-profile-name" style="background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;font-size:12px;">{{ pos_profile or 'POS' }}</span>
+      <span id="clock" style="font-size:12px;background:rgba(255,255,255,.15);padding:4px 10px;border-radius:20px;"></span>
+      <button onclick="toggleFS()" style="padding:4px 10px;border-radius:20px;border:none;background:rgba(255,255,255,.2);color:white;cursor:pointer;">⛶ Fullscreen</button>
+    </div>
+  </div>
+  <div class="cd-main">
+    <div id="customer-display-root">
+      <div style="display:flex;align-items:center;justify-content:center;height:60vh;flex-direction:column;text-align:center;">
+        <div style="font-size:64px;font-weight:900;">Welcome!</div>
+        <div style="font-size:22px;opacity:.9;margin-top:8px;">{{ company or 'POS Next Store' }}</div>
+        <div style="margin-top:16px;padding:16px;background:rgba(255,255,255,.12);border-radius:12px;max-width:600px;">
+          {{ ad_html or 'Scanning items will appear here. Thank you for shopping with us!' }}
+        </div>
+        <div style="margin-top:20px;font-size:12px;opacity:.6;">Waiting for cashier... POS Next Customer Display [Offline Capable]</div>
+        <div style="margin-top:20px;"><div style="width:40px;height:40px;border:4px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin 1s linear infinite;"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="cd-footer">POS Next - Odoo beating Customer Display | Second Screen works offline via BroadcastChannel | <span id="status">● Listening</span></div>
+
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+  <script>
+    // Customer Display JS - works without frappe framework (pure JS) but also uses localStorage fallback
+    const CHANNEL_NAME = "pos_next_customer_display";
+    let channel = null;
+    let lastPayloadTs = Date.now();
+
+    function formatCurrency(amount, currency){
+        try { return new Intl.NumberFormat(undefined,{style:'currency',currency: currency||'USD'}).format(amount||0); }
+        catch { return (currency||'')+" "+(amount||0).toFixed(2); }
+    }
+
+    function escapeHtml(s){ if(!s) return ""; return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+
+    function render(data){
+        if (!data) return;
+        lastPayloadTs = Date.now();
+        document.getElementById("status").textContent = "● Live - "+new Date().toLocaleTimeString();
+        const root = document.getElementById("customer-display-root");
+        if (data.type === "cart_update") {
+            const items = data.items||[];
+            let itemsHtml = items.map(it=>`
+                <div class="cart-line">
+                    <div><strong>${escapeHtml(it.item_name||it.item_code)}</strong> <span style="opacity:.7;">x ${it.qty}</span></div>
+                    <div>${formatCurrency(it.amount||it.qty*it.rate, data.currency)}</div>
+                </div>
+            `).join("");
+            if (!itemsHtml) itemsHtml = '<div style="text-align:center;padding:40px;color:#718096;">Waiting for items...</div>';
+
+            root.innerHTML = `
+                <div style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.2);color:#1A202C;">
+                    <div style="background:#5A67D8;color:white;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;">
+                        <h2 style="margin:0;">${escapeHtml(data.company||"Store")}</h2>
+                        <div style="background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;font-size:11px;">CUSTOMER DISPLAY</div>
+                    </div>
+                    <div style="padding:20px;">
+                        <div>${itemsHtml}</div>
+                        <div style="margin-top:12px;padding-top:12px;border-top:3px solid #E2E8F0;">
+                            <div style="display:flex;justify-content:space-between;font-size:13px;color:#718096;"><span>Subtotal</span><span>${formatCurrency(data.net_total||data.grand_total, data.currency)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:13px;color:#718096;"><span>Tax</span><span>${formatCurrency(data.total_taxes||0, data.currency)}</span></div>
+                            <div class="cart-total"><span>Total</span><span>${formatCurrency(data.grand_total||data.total||0, data.currency)}</span></div>
+                        </div>
+                        ${data.qr ? `<div style="text-align:center;margin-top:16px;"><img src="${data.qr}" style="max-width:140px;"><div style="font-size:10px;color:#999;">Scan to Pay</div></div>` : ''}
+                        ${data.thank_you ? `<div style="text-align:center;margin-top:12px;font-size:18px;font-weight:700;color:#48BB78;">${escapeHtml(data.thank_you)}</div>` : ''}
+                    </div>
+                    <div style="background:#F7FAFC;padding:12px;text-align:center;font-size:11px;color:#999;">
+                        ${data.ad_html||'Thank you for shopping! | POS Next'}
+                    </div>
+                </div>
+                ${data.ads ? `<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">${data.ads.map(ad=>`<div style="background:white;border-radius:12px;padding:10px;text-align:center;color:#1A202C;"><img src="${ad.image}" style="max-width:100%;border-radius:8px;"><div style="font-weight:600;margin-top:6px;">${escapeHtml(ad.title)}</div></div>`).join("")}</div>` : ''}
+            `;
+        } else if (data.type === "idle") {
+            root.innerHTML = `
+                <div style="display:flex;align-items:center;justify-content:center;min-height:50vh;flex-direction:column;text-align:center;color:white;">
+                    <div style="font-size:64px;font-weight:900;">Welcome!</div>
+                    <div style="font-size:20px;opacity:.9;margin-top:8px;">${escapeHtml(data.company||'{{ company }}')}</div>
+                    ${data.ad_html ? `<div style="margin-top:20px;max-width:600px;font-size:14px;background:rgba(255,255,255,.15);padding:16px;border-radius:12px;">${data.ad_html}</div>` : ''}
+                </div>
+            `;
+        } else if (data.type === "payment") {
+            root.innerHTML = `
+                <div style="background:white;border-radius:16px;padding:24px;text-align:center;color:#1A202C;max-width:500px;margin:0 auto;">
+                    <div style="font-size:48px;">✅</div>
+                    <h2 style="margin-top:8px;">Payment Received</h2>
+                    <div style="font-size:28px;font-weight:900;margin-top:12px;">${formatCurrency(data.grand_total, data.currency)}</div>
+                    <div style="margin-top:10px;color:#718096;">Change: ${formatCurrency(data.change||0, data.currency)}</div>
+                    <div style="margin-top:16px;padding:12px;background:#F0FFF4;border-radius:8px;color:#22543D;">Thank you! Please collect your receipt.</div>
+                </div>
+            `;
+        }
+    }
+
+    // Setup BroadcastChannel
+    try {
+        if ("BroadcastChannel" in window) {
+            channel = new BroadcastChannel(CHANNEL_NAME);
+            channel.onmessage = (ev)=>{ render(ev.data); };
+            console.log("BroadcastChannel listening", CHANNEL_NAME);
+        }
+    } catch(e){ console.warn(e); }
+
+    // Poll localStorage fallback
+    setInterval(()=>{
+        try {
+            const raw = localStorage.getItem("pos_next_customer_display_payload");
+            if (raw) {
+                const data = JSON.parse(raw);
+                if (Date.now() - (data._ts||0) < 10000) { // only recent
+                    // Avoid double render if already rendered via BC within 1s
+                    if (Date.now() - lastPayloadTs > 1200) {
+                        render(data);
+                    }
+                }
+            }
+        } catch(e){}
+    }, 600);
+
+    // Clock
+    setInterval(()=>{ document.getElementById("clock").textContent = new Date().toLocaleTimeString(); }, 1000);
+
+    function toggleFS(){
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+    }
+
+    // If opened with pos_profile, try to fetch ads etc via API if frappe available later, ignore for now
+  </script>
+</body>
+</html>

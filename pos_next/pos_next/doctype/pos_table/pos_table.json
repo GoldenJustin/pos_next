@@ -1,0 +1,137 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "table_name",
+  "floor",
+  "pos_profile",
+  "seats",
+  "status",
+  "shape",
+  "color",
+  "current_invoice",
+  "column_break_8",
+  "x_coordinate",
+  "y_coordinate",
+  "width",
+  "height"
+ ],
+ "fields": [
+  {
+   "fieldname": "table_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Table Name / No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "floor",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Floor",
+   "options": "POS Floor",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pos_profile",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "POS Profile",
+   "options": "POS Profile",
+   "reqd": 1,
+   "fetch_from": "floor.pos_profile"
+  },
+  {
+   "fieldname": "seats",
+   "fieldtype": "Int",
+   "label": "Number of Seats",
+   "default": "4"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Available\nOccupied\nReserved\nCleaning\nDisabled",
+   "default": "Available",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "shape",
+   "fieldtype": "Select",
+   "label": "Shape",
+   "options": "Square\nRound\nRectangle",
+   "default": "Square"
+  },
+  {
+   "fieldname": "color",
+   "fieldtype": "Color",
+   "label": "Color"
+  },
+  {
+   "fieldname": "current_invoice",
+   "fieldtype": "Link",
+   "label": "Current Invoice",
+   "options": "POS Invoice",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "x_coordinate",
+   "fieldtype": "Int",
+   "label": "X (Canvas)",
+   "default": "0"
+  },
+  {
+   "fieldname": "y_coordinate",
+   "fieldtype": "Int",
+   "label": "Y (Canvas)",
+   "default": "0"
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Int",
+   "label": "Width",
+   "default": "80"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Int",
+   "label": "Height",
+   "default": "80"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "module": "POS Next",
+ "name": "POS Table",
+ "naming_rule": "By fieldname",
+ "autoname": "field:table_name",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "write": 1,
+   "read": 1,
+   "role": "Sales User"
+  }
+ ],
+ "sort_field": "modified"
+}

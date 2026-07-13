@@ -1,0 +1,77 @@
+{
+ "actions": [],
+ "creation": "2026-01-01",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "item_name",
+  "qty",
+  "uom",
+  "kot_status",
+  "kot_notes",
+  "printer",
+  "fired"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "in_list_view": 1,
+   "fetch_from": "item_code.item_name"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "label": "Qty",
+   "in_list_view": 1,
+   "reqd": 1,
+   "default": "1"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "kot_status",
+   "fieldtype": "Select",
+   "label": "KOT Status",
+   "options": "New\nCooking\nReady\nServed\nCancelled",
+   "default": "New",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "kot_notes",
+   "fieldtype": "Small Text",
+   "label": "Kitchen Notes"
+  },
+  {
+   "fieldname": "printer",
+   "fieldtype": "Data",
+   "label": "Printer (Item Group routed)"
+  },
+  {
+   "fieldname": "fired",
+   "fieldtype": "Check",
+   "label": "Fired to Kitchen",
+   "default": "0"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "module": "POS Next",
+ "name": "POS KOT Item",
+ "permissions": [],
+ "sort_field": "modified"
+}

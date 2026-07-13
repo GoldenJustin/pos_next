@@ -1,0 +1,12 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-01-01",
+ "doctype": "Report",
+ "is_standard": "Yes",
+ "module": "POS Next",
+ "name": "POS X Z Report",
+ "ref_doctype": "POS Opening Shift",
+ "report_name": "POS X Z Report",
+ "report_type": "Query Report"
+}

@@ -1,0 +1,108 @@
+{
+ "actions": [],
+ "creation": "2026-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "template_name",
+  "is_default",
+  "paper_size",
+  "is_escpos",
+  "show_logo",
+  "show_customer",
+  "show_barcode",
+  "show_qr",
+  "section_break_html",
+  "template_html",
+  "template_css"
+ ],
+ "fields": [
+  {
+   "fieldname": "template_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Template Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "is_default",
+   "fieldtype": "Check",
+   "label": "Is Default"
+  },
+  {
+   "fieldname": "paper_size",
+   "fieldtype": "Select",
+   "label": "Paper Size",
+   "options": "80mm\n58mm\nA4\nLetter",
+   "default": "80mm"
+  },
+  {
+   "fieldname": "is_escpos",
+   "fieldtype": "Check",
+   "label": "ESC/POS Optimized"
+  },
+  {
+   "fieldname": "show_logo",
+   "fieldtype": "Check",
+   "label": "Show Logo",
+   "default": "1"
+  },
+  {
+   "fieldname": "show_customer",
+   "fieldtype": "Check",
+   "label": "Show Customer",
+   "default": "1"
+  },
+  {
+   "fieldname": "show_barcode",
+   "fieldtype": "Check",
+   "label": "Show Invoice Barcode"
+  },
+  {
+   "fieldname": "show_qr",
+   "fieldtype": "Check",
+   "label": "Show QR Payment",
+   "default": "1"
+  },
+  {
+   "fieldname": "section_break_html",
+   "fieldtype": "Section Break",
+   "label": "Template Code (Jinja)"
+  },
+  {
+   "fieldname": "template_html",
+   "fieldtype": "Code",
+   "label": "HTML Template",
+   "options": "HTML",
+   "reqd": 1
+  },
+  {
+   "fieldname": "template_css",
+   "fieldtype": "Code",
+   "label": "CSS",
+   "options": "CSS"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "module": "POS Next",
+ "name": "POS Receipt Template",
+ "naming_rule": "By fieldname",
+ "autoname": "field:template_name",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified"
+}

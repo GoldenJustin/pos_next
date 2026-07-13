@@ -1,0 +1,12 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-01-01",
+ "doctype": "Report",
+ "is_standard": "Yes",
+ "module": "POS Next",
+ "name": "Pos Hourly Sales",
+ "ref_doctype": "POS Invoice",
+ "report_name": "Pos Hourly Sales",
+ "report_type": "Query Report"
+}

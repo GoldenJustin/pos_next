@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "creation": "2026-01-01",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "item_group",
+  "printer_name",
+  "printer_ip",
+  "printer_type",
+  "print_format"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "printer_name",
+   "fieldtype": "Data",
+   "label": "Printer Name",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "printer_ip",
+   "fieldtype": "Data",
+   "label": "Printer IP / Path"
+  },
+  {
+   "fieldname": "printer_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Network\nUSB\nBluetooth\nCups",
+   "default": "Network"
+  },
+  {
+   "fieldname": "print_format",
+   "fieldtype": "Link",
+   "label": "Print Format",
+   "options": "Print Format"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "module": "POS Next",
+ "name": "POS KOT Printer Map",
+ "permissions": [],
+ "sort_field": "modified"
+}
