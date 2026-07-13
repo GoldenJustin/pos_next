@@ -3,7 +3,7 @@ requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pos-next"
+name = "pos_next"
 version = "2.0.0"
 description = "POS Next - Odoo-beating Super POS for ERPNext 15+ with Restaurant, KDS, KOT, Customer Display, Supermarket, Cash Ops, Offline & Premium Receipts"
 readme = "README.md"

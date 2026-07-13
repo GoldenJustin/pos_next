@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="pos-next",
+    name="pos_next",
     version="2.0.0",
     description="Odoo-beating Super POS for ERPNext 15+",
     long_description=long_description,
