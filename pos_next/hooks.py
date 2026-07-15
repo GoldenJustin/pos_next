@@ -5,8 +5,8 @@ app_description = "Modern, fast and complete POS for retail, wholesale, supermar
 app_email = "support@posnext.local"
 app_license = "mit"
 app_version = "4.1.0"
-app_icon = "shopping-cart"
-app_color = "violet"
+app_icon = "octicon octicon-package"
+app_color = "blue"
 
 required_apps = ["erpnext"]
 fixtures = []
