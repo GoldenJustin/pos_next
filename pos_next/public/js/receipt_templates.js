@@ -38,7 +38,7 @@ pos_next.receipt.templates = {
     <div style="text-align:center;margin-top:8px;font-size:10px;">Thank you! Visit again<br>Powered by POS Next</div>
 </div>
 `,
-    "odoo_clone": `
+    "pos_clone": `
 <div style="width:80mm;font-family:'Helvetica',sans-serif;padding:10px;">
     <div style="text-align:center;">
         <h2 style="margin:0;font-weight:900;letter-spacing:1px;">{{ doc.company }}</h2>
@@ -72,7 +72,7 @@ pos_next.receipt.templates = {
     </div>
     <div style="text-align:center;margin-top:14px;">
         <div style="font-size:11px;color:#999;">Thank you for your purchase!</div>
-        <div style="font-size:9px;color:#aaa;margin-top:6px;">Odoo taste - Built with POS Next | {{ frappe.datetime.now_date() }}</div>
+        <div style="font-size:9px;color:#aaa;margin-top:6px;"> taste - Built with POS Next | {{ frappe.datetime.now_date() }}</div>
         {% if show_barcode %}<div style="margin-top:8px;font-family:'Libre Barcode 39',monospace;font-size:28px;">*{{ doc.name }}*</div>{% endif %}
     </div>
 </div>

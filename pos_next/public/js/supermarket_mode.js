@@ -5,7 +5,7 @@ frappe.provide("pos_next.supermarket");
 pos_next.supermarket.PARKED_KEY = "pos_next_parked_invoices";
 
 pos_next.supermarket.parseWeightedBarcode = function(barcode, pos_profile_doc) {
-    // Odoo style: prefix 2 with configurable prefixes
+    //  style: prefix 2 with configurable prefixes
     // Format examples:
     // 21 = variable weight product? Actually many formats:
     // Common: 2 + item_code (5 digits) + weight (5 digits) = 21 + XXXXX + YYYYY + C
@@ -177,7 +177,7 @@ pos_next.supermarket.showSplitBillDialog = function(pos_cart) {
     `).join("");
 
     const d = new frappe.ui.Dialog({
-        title:"Split Bill - Odoo Like",
+        title:"Split Bill - Modern Retail",
         size:"large",
         fields:[
             {fieldtype:"HTML", fieldname:"split_ui", options:`

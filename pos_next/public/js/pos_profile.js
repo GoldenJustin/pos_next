@@ -1,7 +1,7 @@
 frappe.ui.form.on('POS Profile', {
     refresh: function(frm) {
         if (frm.doc.custom_enable_pos_next) {
-            frm.dashboard.add_comment("POS Next Super POS Enabled - Odoo-like features active", "blue", true);
+            frm.dashboard.add_comment("POS Next Super POS Enabled - Modern features active", "blue", true);
         }
         frm.add_custom_button("Open KDS", () => {
             window.open(`/kds?pos_profile=${frm.doc.name}`, "_blank");

@@ -1,64 +1,34 @@
-POS NEXT - INSTALLATION GUIDE - ERPNext v15+
+POS NEXT v3.0 - Modern Retail & Restaurant POS - INSTALLATION GUIDE
 
-1. Clone:
-   cd /home/frappe/frappe-bench
-   bench get-app pos_next /home/user/pos_next
-   # If zip: unzip pos_next.zip -d apps/ then mv apps/pos_next/pos_next apps/pos_next? Just ensure apps/pos_next contains pyproject.toml
-
-2. Install:
+1. Install (Frappe v15 & v16 compatible, standalone, no extra pip packages)
+   cd ~/frappe-bench
+   bench get-app pos_next https://github.com/GoldenJustin/pos_next.git --branch main
    bench --site yoursite install-app pos_next
-
-3. Migrate & Build:
    bench --site yoursite migrate
    bench build --app pos_next
    bench restart
 
-4. Seed demo:
-   bench --site yoursite execute pos_next.seed.install_demo_data
+2. Configure Global Settings
+   - Open Workspace POS Next -> POS Next Settings
+   - Set Business Type: Retail, Restaurant, Supermarket, Wholesale, etc.
 
-5. Configure POS Profile:
-   - Open POS Profile
-   - Enable POS Next (checked)
-   - Set POS Mode = Restaurant (or Supermarket)
-   - Enable Table Management, KDS, Customer Display, Cash In/Out, Split, Offline, Odoo Hotkeys
-   - Set Receipt Template = Odoo Clone (for Odoo customers taste same)
-   - Set KOT Printer Map: Item Group = All Item Groups -> Printer = Kitchen Printer Name
-   - Save
+3. Configure POS Profile
+   - Enable POS Next
+   - Set POS Mode: Retail, Restaurant, Supermarket, Wholesale, etc.
+   - Enable Table Management, KDS, Customer Display, Cash In/Out, Split Bill, Offline, Hotkeys
+   - Set Receipt Template (Modern Retail recommended)
+   - Set KOT Printer Map
 
-6. Create Floor/Table if not seeded:
-   - POS Floor: Ground Floor -> POS Profile = your profile
-   - POS Table: T1, T2... Floor = Ground, Seats 4
+4. Restaurant
+   - Create POS Floor, POS Tables or seed demo
+   - bench --site yoursite execute pos_next.seed.seed_demo_for_profile --kwargs "{'pos_profile':'Your Profile'}"
 
-7. Open POS:
-   - Point of Sale -> select profile -> new top bar appears with Tables, Split, Cash, Reports, etc.
-   - F1-F10 hotkeys work like Odoo
+5. KDS
+   - Open /kds?pos_profile=YourProfile on kitchen tablet
 
-8. KDS:
-   - Open /kds?pos_profile=Your POS Name in new tab on kitchen tablet
-   - Login with same site user
-   - KOTs appear live
+6. Customer Display
+   - Open /customer-display?pos_profile=YourProfile on second screen
 
-9. Customer Display:
-   - Open /customer-display?pos_profile=Your POS Name on second screen
-   - Must be same browser origin (same site) for broadcast to work
-   - You can drag to extended display, F11 fullscreen
+7. Reports via Workspace POS Next
 
-10. Offline Test:
-    - In Chrome DevTools -> Network -> Offline
-    - Continue billing, badge red offline, invoices queued
-    - Go online, badge shows syncing, then green all synced
-
-11. Reports:
-    - Query Report -> POS Sales Summary, POS X Z Report, etc.
-
-12. Receipts:
-    - POS Receipt Template list: 5 templates created. Edit HTML if needed.
-    - Per POS Profile select template. Print button in POS Invoice uses same.
-
-TROUBLESHOOT:
-- If POS page old cache: bench build --app pos_next --force, clear browser cache
-- If custom fields missing: bench --site site execute pos_next.seed.setup_after_install
-- If KDS API 403: give user Role Kitchen User and POS access
-
-SUPPORT:
-- This app is MIT, white-label ready for your customers migration from Odoo.
+If custom fields not showing: bench --site yoursite execute pos_next.seed.setup_after_install

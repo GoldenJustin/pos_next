@@ -1,0 +1,18 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5A67D8"/>
+      <stop offset="100%" stop-color="#805AD5"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#g)"/>
+  <g transform="translate(12 12)" fill="white">
+    <!-- shopping cart -->
+    <path d="M6 2 L8 2 L10 14 L30 14 L32 6 L10 6" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="12" cy="26" r="2.5" fill="white"/>
+    <circle cx="26" cy="26" r="2.5" fill="white"/>
+    <!-- receipt lines -->
+    <rect x="34" y="2" width="4" height="20" rx="1" fill="white" opacity="0.9"/>
+    <rect x="34" y="24" width="4" height="4" rx="1" fill="white" opacity="0.6"/>
+  </g>
+</svg>

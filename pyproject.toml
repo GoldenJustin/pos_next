@@ -4,29 +4,32 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pos_next"
-version = "2.0.0"
-description = "POS Next - Odoo-beating Super POS for ERPNext 15+ with Restaurant, KDS, KOT, Customer Display, Supermarket, Cash Ops, Offline & Premium Receipts"
+version = "3.0.0"
+description = "Modern, complete POS for retail, wholesale, supermarket, pharmacy and restaurants - tables, KDS, KOT, customer display, offline, receipts, cash management, reports."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
-authors = [
-  {name = "POS Next Team"},
-]
-maintainers = [
-  {name = "POS Next"},
-]
-keywords = ["erpnext", "pos", "restaurant", "kds", "kot", "retail", "supermarket"]
+authors = [{name = "POS Next Team"}]
+maintainers = [{name = "POS Next Team"}]
+keywords = ["erpnext","pos","retail","restaurant","kds","kot","supermarket","wholesale"]
 classifiers = [
   "Framework :: Frappe",
   "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent"
 ]
-dependencies = [
-  "frappe>=15.0.0",
-]
+# IMPORTANT: keep dependencies empty for Frappe v16 compatibility with uv resolver
+# Frappe itself has pypika URL dependency that breaks uv when pos_next depends on frappe.
+# We rely on bench's required_apps = ["erpnext"] to ensure ERPNext is present.
+dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/your-org/pos_next"
-Repository = "https://github.com/your-org/pos_next"
+Homepage = "https://github.com/GoldenJustin/pos_next"
+Repository = "https://github.com/GoldenJustin/pos_next"
+Documentation = "https://github.com/GoldenJustin/pos_next#readme"
 
 [tool.setuptools.packages.find]
 include = ["pos_next*"]
+
+[tool.setuptools.package-data]
+pos_next = ["public/**/*", "templates/**/*", "www/**/*", "workspace/**/*", "fixtures/**/*"]

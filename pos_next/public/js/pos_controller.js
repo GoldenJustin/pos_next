@@ -1,4 +1,4 @@
-/* POS Next Main POS Controller - Injects Odoo-like features into ERPNext POS
+/* POS Next Main POS Controller - Injects Modern features into ERPNext POS
    Works by monkey-patching ERPNext POS classes after page load
 */
 
@@ -35,12 +35,12 @@ pos_next.pos.init = function() {
 pos_next.pos.inject = function() {
     console.log("[POS Next] Injecting UI into POS");
 
-    // Inject top bar Odoo style
+    // Inject top bar  style
     if ($(".pos-next-top-bar-injected").length === 0 && $(".point-of-sale-app").length) {
         // Find header
         const $app = $(".point-of-sale-app");
         const topBar = `
-            <div class="odoo-top-bar pos-next-top-bar-injected pos-next-no-print" style="margin-bottom:8px;">
+            <div class="pos-top-bar pos-next-top-bar-injected pos-next-no-print" style="margin-bottom:8px;">
                 <div style="display:flex;gap:8px;align-items:center;">
                     <span style="font-weight:900;letter-spacing:1px;">POS NEXT</span>
                     <span class="pos-next-mode-badge pos-mode-retail" id="pos-mode-badge">RETAIL</span>
@@ -116,7 +116,7 @@ pos_next.pos.inject = function() {
             // Hook barcode scanner for weighted
             pos_next.pos.hookBarcode(pos_obj);
 
-            // Hotkeys Odoo style
+            // Hotkeys  style
             pos_next.pos.bindHotkeys();
         }
     } catch (e) {

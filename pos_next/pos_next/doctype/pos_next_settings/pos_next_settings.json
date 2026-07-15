@@ -1,0 +1,364 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-07-15 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_general",
+  "business_type",
+  "default_company",
+  "default_currency",
+  "col_general_2",
+  "enable_advanced_receipts",
+  "enable_multi_currency",
+  "section_features",
+  "enable_restaurant_mode",
+  "enable_table_management",
+  "enable_guest_count",
+  "col_feat_2",
+  "enable_kds",
+  "enable_kitchen_printing",
+  "enable_kot_auto_fire",
+  "section_retail",
+  "enable_supermarket_mode",
+  "enable_weighted_barcode",
+  "enable_wholesale_pricing",
+  "enable_loyalty",
+  "col_retail_2",
+  "enable_split_bill",
+  "enable_hold_park",
+  "enable_return_exchange",
+  "enable_discount_authorization",
+  "section_display",
+  "enable_customer_display",
+  "customer_display_ad_html",
+  "col_display_2",
+  "kds_refresh_seconds",
+  "enable_sound_alert",
+  "sound_file",
+  "section_offline",
+  "enable_hard_offline",
+  "offline_sync_interval",
+  "enable_auto_sync",
+  "col_offline_2",
+  "allow_negative_stock",
+  "enable_quick_add_customer",
+  "section_cash",
+  "enable_cash_in_out",
+  "require_cash_reason",
+  "enable_x_z_reports",
+  "cash_shortage_limit",
+  "section_receipt",
+  "default_receipt_template",
+  "show_logo_in_receipt",
+  "show_qr_payment",
+  "footer_text",
+  "section_other"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_general",
+   "fieldtype": "Section Break",
+   "label": "General Business Settings"
+  },
+  {
+   "fieldname": "business_type",
+   "fieldtype": "Select",
+   "label": "Business Type",
+   "options": "Retail\nWholesale\nSupermarket\nRestaurant\nBar & Pub\nBakery\nPharmacy\nFashion\nElectronics\nMulti-Business",
+   "default": "Retail"
+  },
+  {
+   "fieldname": "default_company",
+   "fieldtype": "Link",
+   "label": "Default Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "default_currency",
+   "fieldtype": "Link",
+   "label": "Default Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "col_general_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "enable_advanced_receipts",
+   "fieldtype": "Check",
+   "label": "Enable Advanced Receipt Templates",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_multi_currency",
+   "fieldtype": "Check",
+   "label": "Enable Multi-Currency Support"
+  },
+  {
+   "fieldname": "section_features",
+   "fieldtype": "Section Break",
+   "label": "Restaurant & Table Features"
+  },
+  {
+   "fieldname": "enable_restaurant_mode",
+   "fieldtype": "Check",
+   "label": "Enable Restaurant Mode",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_table_management",
+   "fieldtype": "Check",
+   "label": "Enable Table Management (Floors & Tables)",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_guest_count",
+   "fieldtype": "Check",
+   "label": "Enable Guest Count Tracking",
+   "default": "1"
+  },
+  {
+   "fieldname": "col_feat_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "enable_kds",
+   "fieldtype": "Check",
+   "label": "Enable Kitchen Display System (KDS)",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_kitchen_printing",
+   "fieldtype": "Check",
+   "label": "Enable Kitchen Printer Routing",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_kot_auto_fire",
+   "fieldtype": "Check",
+   "label": "Auto Fire KOT on Item Add",
+   "default": "0"
+  },
+  {
+   "fieldname": "section_retail",
+   "fieldtype": "Section Break",
+   "label": "Retail & Supermarket Features"
+  },
+  {
+   "fieldname": "enable_supermarket_mode",
+   "fieldtype": "Check",
+   "label": "Enable Supermarket Mode",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_weighted_barcode",
+   "fieldtype": "Check",
+   "label": "Enable Weighted Barcode (21-29 prefix)",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_wholesale_pricing",
+   "fieldtype": "Check",
+   "label": "Enable Wholesale Pricing",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_loyalty",
+   "fieldtype": "Check",
+   "label": "Enable Loyalty & Promotions",
+   "default": "1"
+  },
+  {
+   "fieldname": "col_retail_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "enable_split_bill",
+   "fieldtype": "Check",
+   "label": "Enable Split Bill (By Item / Qty / Equal)",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_hold_park",
+   "fieldtype": "Check",
+   "label": "Enable Hold / Park Bill",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_return_exchange",
+   "fieldtype": "Check",
+   "label": "Enable Return & Exchange from POS",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_discount_authorization",
+   "fieldtype": "Check",
+   "label": "Require Authorization for Discounts"
+  },
+  {
+   "fieldname": "section_display",
+   "fieldtype": "Section Break",
+   "label": "Display & KDS"
+  },
+  {
+   "fieldname": "enable_customer_display",
+   "fieldtype": "Check",
+   "label": "Enable Customer Display (Second Screen)",
+   "default": "1"
+  },
+  {
+   "fieldname": "customer_display_ad_html",
+   "fieldtype": "Code",
+   "label": "Customer Display Advertisement (HTML)",
+   "options": "HTML",
+   "default": "<div style='text-align:center'><h3>Thank you for visiting!</h3><p>Get 10% off on next purchase</p></div>"
+  },
+  {
+   "fieldname": "col_display_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "kds_refresh_seconds",
+   "fieldtype": "Int",
+   "label": "KDS Auto Refresh (seconds)",
+   "default": "3"
+  },
+  {
+   "fieldname": "enable_sound_alert",
+   "fieldtype": "Check",
+   "label": "Enable KDS Sound Alert on New Order",
+   "default": "1"
+  },
+  {
+   "fieldname": "sound_file",
+   "fieldtype": "Data",
+   "label": "Sound URL (optional)"
+  },
+  {
+   "fieldname": "section_offline",
+   "fieldtype": "Section Break",
+   "label": "Offline & Performance"
+  },
+  {
+   "fieldname": "enable_hard_offline",
+   "fieldtype": "Check",
+   "label": "Enable Hard Offline (IndexedDB)",
+   "default": "1",
+   "description": "Continue billing even when internet is completely down, sync later"
+  },
+  {
+   "fieldname": "offline_sync_interval",
+   "fieldtype": "Int",
+   "label": "Offline Sync Interval (seconds)",
+   "default": "30"
+  },
+  {
+   "fieldname": "enable_auto_sync",
+   "fieldtype": "Check",
+   "label": "Auto Sync When Online",
+   "default": "1"
+  },
+  {
+   "fieldname": "col_offline_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "allow_negative_stock",
+   "fieldtype": "Check",
+   "label": "Allow Negative Stock in POS"
+  },
+  {
+   "fieldname": "enable_quick_add_customer",
+   "fieldtype": "Check",
+   "label": "Enable Quick Add Customer from POS",
+   "default": "1"
+  },
+  {
+   "fieldname": "section_cash",
+   "fieldtype": "Section Break",
+   "label": "Cash Management"
+  },
+  {
+   "fieldname": "enable_cash_in_out",
+   "fieldtype": "Check",
+   "label": "Enable Cash In / Cash Out",
+   "default": "1"
+  },
+  {
+   "fieldname": "require_cash_reason",
+   "fieldtype": "Check",
+   "label": "Require Reason for Cash Movement",
+   "default": "1"
+  },
+  {
+   "fieldname": "enable_x_z_reports",
+   "fieldtype": "Check",
+   "label": "Enable X / Z Reports",
+   "default": "1"
+  },
+  {
+   "fieldname": "cash_shortage_limit",
+   "fieldtype": "Currency",
+   "label": "Cash Shortage Alert Limit",
+   "default": "5"
+  },
+  {
+   "fieldname": "section_receipt",
+   "fieldtype": "Section Break",
+   "label": "Receipt & Printing"
+  },
+  {
+   "fieldname": "default_receipt_template",
+   "fieldtype": "Link",
+   "label": "Default Receipt Template",
+   "options": "POS Receipt Template"
+  },
+  {
+   "fieldname": "show_logo_in_receipt",
+   "fieldtype": "Check",
+   "label": "Show Logo in Receipt",
+   "default": "1"
+  },
+  {
+   "fieldname": "show_qr_payment",
+   "fieldtype": "Check",
+   "label": "Show QR Code for Payment",
+   "default": "1"
+  },
+  {
+   "fieldname": "footer_text",
+   "fieldtype": "Small Text",
+   "label": "Receipt Footer Text",
+   "default": "Thank you for shopping with us! Visit again."
+  },
+  {
+   "fieldname": "section_other",
+   "fieldtype": "Section Break",
+   "label": "Other"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "module": "POS Next",
+ "name": "POS Next Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified"
+}

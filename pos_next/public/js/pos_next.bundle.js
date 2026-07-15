@@ -660,7 +660,7 @@ frappe.provide("pos_next.supermarket");
 pos_next.supermarket.PARKED_KEY = "pos_next_parked_invoices";
 
 pos_next.supermarket.parseWeightedBarcode = function(barcode, pos_profile_doc) {
-    // Odoo style: prefix 2 with configurable prefixes
+    //  style: prefix 2 with configurable prefixes
     // Format examples:
     // 21 = variable weight product? Actually many formats:
     // Common: 2 + item_code (5 digits) + weight (5 digits) = 21 + XXXXX + YYYYY + C
@@ -832,7 +832,7 @@ pos_next.supermarket.showSplitBillDialog = function(pos_cart) {
     `).join("");
 
     const d = new frappe.ui.Dialog({
-        title:"Split Bill - Odoo Like",
+        title:"Split Bill - Modern Retail",
         size:"large",
         fields:[
             {fieldtype:"HTML", fieldname:"split_ui", options:`
@@ -1110,7 +1110,7 @@ pos_next.receipt.templates = {
     <div style="text-align:center;margin-top:8px;font-size:10px;">Thank you! Visit again<br>Powered by POS Next</div>
 </div>
 `,
-    "odoo_clone": `
+    "pos_clone": `
 <div style="width:80mm;font-family:'Helvetica',sans-serif;padding:10px;">
     <div style="text-align:center;">
         <h2 style="margin:0;font-weight:900;letter-spacing:1px;">{{ doc.company }}</h2>
@@ -1144,7 +1144,7 @@ pos_next.receipt.templates = {
     </div>
     <div style="text-align:center;margin-top:14px;">
         <div style="font-size:11px;color:#999;">Thank you for your purchase!</div>
-        <div style="font-size:9px;color:#aaa;margin-top:6px;">Odoo taste - Built with POS Next | {{ frappe.datetime.now_date() }}</div>
+        <div style="font-size:9px;color:#aaa;margin-top:6px;"> taste - Built with POS Next | {{ frappe.datetime.now_date() }}</div>
         {% if show_barcode %}<div style="margin-top:8px;font-family:'Libre Barcode 39',monospace;font-size:28px;">*{{ doc.name }}*</div>{% endif %}
     </div>
 </div>
@@ -1293,7 +1293,7 @@ pos_next.receipt.showSelector = function(invoice_name, pos_profile) {
         }
     });
 };
-/* POS Next Main POS Controller - Injects Odoo-like features into ERPNext POS
+/* POS Next Main POS Controller - Injects Modern features into ERPNext POS
    Works by monkey-patching ERPNext POS classes after page load
 */
 
@@ -1330,12 +1330,12 @@ pos_next.pos.init = function() {
 pos_next.pos.inject = function() {
     console.log("[POS Next] Injecting UI into POS");
 
-    // Inject top bar Odoo style
+    // Inject top bar  style
     if ($(".pos-next-top-bar-injected").length === 0 && $(".point-of-sale-app").length) {
         // Find header
         const $app = $(".point-of-sale-app");
         const topBar = `
-            <div class="odoo-top-bar pos-next-top-bar-injected pos-next-no-print" style="margin-bottom:8px;">
+            <div class="pos-top-bar pos-next-top-bar-injected pos-next-no-print" style="margin-bottom:8px;">
                 <div style="display:flex;gap:8px;align-items:center;">
                     <span style="font-weight:900;letter-spacing:1px;">POS NEXT</span>
                     <span class="pos-next-mode-badge pos-mode-retail" id="pos-mode-badge">RETAIL</span>
@@ -1411,7 +1411,7 @@ pos_next.pos.inject = function() {
             // Hook barcode scanner for weighted
             pos_next.pos.hookBarcode(pos_obj);
 
-            // Hotkeys Odoo style
+            // Hotkeys  style
             pos_next.pos.bindHotkeys();
         }
     } catch (e) {

@@ -1,4 +1,4 @@
-/* POS Next - Super POS Styles - Odoo-like but better */
+/* POS Next - Super POS Styles - Modern but better */
 
 :root {
   --pos-next-primary: #5A67D8;
@@ -117,7 +117,7 @@
 .pos-mode-supermarket { background: #C6F6D5; color: #22543D; }
 .pos-mode-retail { background: #BEE3F8; color: #2A4365; }
 
-/* Action Buttons Bar Odoo Style */
+/* Action Buttons Bar  Style */
 .pos-next-action-bar {
   display: flex;
   gap: 8px;
@@ -253,8 +253,8 @@
   box-shadow: 0 6px 16px rgba(0,0,0,.08);
 }
 
-/* Odoo-like top bar */
-.odoo-top-bar {
+/* Modern top bar */
+.pos-top-bar, .pos-next-top-bar {
   background: var(--pos-next-dark);
   color: white;
   display: flex;
