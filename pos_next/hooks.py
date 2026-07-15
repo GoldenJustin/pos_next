@@ -5,22 +5,18 @@ app_description = "Modern, fast and complete POS for retail, wholesale, supermar
 app_email = "support@posnext.local"
 app_license = "mit"
 app_version = "3.0.0"
-app_icon = "octicon octicon-package"
-app_color = "#5A67D8"
+app_icon = "shopping-cart"
+app_color = "violet"
 
 required_apps = ["erpnext"]
-
 fixtures = []
 
-# Website / KDS / Customer Display routes
 website_route_rules = [
     {"from_route": "/kds", "to_route": "kds"},
     {"from_route": "/customer-display", "to_route": "customer-display"},
 ]
 
-# Desk - include CSS globally, POS bundle only on POS page
 app_include_css = "/assets/pos_next/css/pos_next.bundle.css"
-app_include_icons = "/assets/pos_next/images/pos-next-icon.svg"
 
 page_js = {
     "point-of-sale": "public/js/pos_next.bundle.js"
@@ -60,17 +56,3 @@ jenv = {
 }
 
 extend_bootinfo = "pos_next.api.boot.bootinfo"
-
-# Add to apps screen
-add_to_apps_screen = [
-    {
-        "name": "pos_next",
-        "logo": "/assets/pos_next/images/pos-next-icon.svg",
-        "title": "POS Next",
-        "route": "/app/pos-next",
-        "has_permission": "pos_next.api.check_app_permission"
-    }
-]
-
-# Desk Shortcuts
-website_generators = []

@@ -1,69 +1,30 @@
 {
  "charts": [],
- "content": "[{\"id\":\"yX7QkL\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">POS Operations</span>\",\"col\":12}},{\"id\":\"a1b2c3\",\"type\":\"card\",\"data\":{\"card_name\":\"Point of Sale\",\"col\":4}},{\"id\":\"d4e5f6\",\"type\":\"card\",\"data\":{\"card_name\":\"Cash & Shifts\",\"col\":4}},{\"id\":\"g7h8i9\",\"type\":\"card\",\"data\":{\"card_name\":\"Kitchen\",\"col\":4}},{\"id\":\"j0k1l2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Master Data & Configuration</span>\",\"col\":12}},{\"id\":\"m3n4o5\",\"type\":\"card\",\"data\":{\"card_name\":\"Restaurant Setup\",\"col\":4}},{\"id\":\"p6q7r8\",\"type\":\"card\",\"data\":{\"card_name\":\"Receipt & Printing\",\"col\":4}},{\"id\":\"s9t0u1\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings & Tools\",\"col\":4}},{\"id\":\"v2w3x4\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Reports & Analytics</span>\",\"col\":12}},{\"id\":\"y5z6a7\",\"type\":\"card\",\"data\":{\"card_name\":\"Sales Reports\",\"col\":6}},{\"id\":\"b8c9d0\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations Reports\",\"col\":6}}]",
+ "content": "[{\"id\":\"header_ops\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">POS Operations</span>\",\"col\":12}},{\"id\":\"card_pos\",\"type\":\"card\",\"data\":{\"card_name\":\"Point of Sale\",\"col\":4}},{\"id\":\"card_cash\",\"type\":\"card\",\"data\":{\"card_name\":\"Cash & Shifts\",\"col\":4}},{\"id\":\"card_kitchen\",\"type\":\"card\",\"data\":{\"card_name\":\"Kitchen\",\"col\":4}},{\"id\":\"header_master\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Master Data</span>\",\"col\":12}},{\"id\":\"card_restaurant\",\"type\":\"card\",\"data\":{\"card_name\":\"Restaurant Setup\",\"col\":4}},{\"id\":\"card_receipt\",\"type\":\"card\",\"data\":{\"card_name\":\"Receipt & Printing\",\"col\":4}},{\"id\":\"card_settings\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings & Tools\",\"col\":4}},{\"id\":\"header_reports\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Reports & Analytics</span>\",\"col\":12}},{\"id\":\"card_sales\",\"type\":\"card\",\"data\":{\"card_name\":\"Sales Reports\",\"col\":6}},{\"id\":\"card_ops\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations Reports\",\"col\":6}}]",
  "creation": "2026-07-15 12:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
  "hide_custom": 0,
- "icon": "pos",
+ "icon": "shopping-cart",
  "idx": 0,
  "is_hidden": 0,
  "label": "POS Next",
  "links": [
   {
+   "card_name": "Point of Sale",
    "hidden": 0,
    "is_query_report": 0,
    "label": "Point of Sale",
-   "link_count": 5,
+   "link_count": 0,
    "link_to": "point-of-sale",
    "link_type": "Page",
    "onboard": 0,
    "type": "Link"
   },
   {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "POS Opening Shift",
-   "link_count": 0,
-   "link_to": "POS Opening Shift",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "POS Closing Shift",
-   "link_count": 0,
-   "link_to": "POS Closing Shift",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "KDS - Kitchen Display",
-   "link_count": 0,
-   "link_to": "/kds",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link",
-   "dependencies": ""
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Customer Display",
-   "link_count": 0,
-   "link_to": "/customer-display",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
+   "card_name": "Point of Sale",
    "hidden": 0,
    "is_query_report": 0,
    "label": "POS Invoices",
@@ -74,16 +35,18 @@
    "type": "Link"
   },
   {
+   "card_name": "Point of Sale",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "POS Next Settings",
+   "label": "POS Opening Shift",
    "link_count": 0,
-   "link_to": "POS Next Settings",
+   "link_to": "POS Opening Shift",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   },
   {
+   "card_name": "Point of Sale",
    "hidden": 0,
    "is_query_report": 0,
    "label": "POS Profiles",
@@ -107,7 +70,7 @@
   {
    "card_name": "Cash & Shifts",
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "X Z Report",
    "link_count": 0,
    "link_to": "POS X Z Report",
@@ -118,7 +81,7 @@
   {
    "card_name": "Cash & Shifts",
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Cashier Log",
    "link_count": 0,
    "link_to": "POS Cashier Log",
@@ -140,7 +103,7 @@
   {
    "card_name": "Kitchen",
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "KOT Performance",
    "link_count": 0,
    "link_to": "KOT Performance",
@@ -173,7 +136,7 @@
   {
    "card_name": "Restaurant Setup",
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Table Wise Sales",
    "link_count": 0,
    "link_to": "POS Table Wise Sales",
@@ -188,17 +151,6 @@
    "label": "Receipt Templates",
    "link_count": 0,
    "link_to": "POS Receipt Template",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "card_name": "Receipt & Printing",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "KOT Printer Map",
-   "link_count": 0,
-   "link_to": "POS KOT Printer Map",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
