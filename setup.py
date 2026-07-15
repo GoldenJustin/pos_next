@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="pos_next",
-    version="4.0.0",
+    version="4.1.0",
     description="Modern Retail & Restaurant POS for ERPNext - tables, KDS, offline, premium receipts",
     long_description=long_description,
     long_description_content_type="text/markdown",

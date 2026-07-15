@@ -352,3 +352,9 @@ def install_demo_data():
     if profiles:
         seed_demo_for_profile(profiles[0])
     return "Demo data installed for POS Next v3 - Modern"
+
+@frappe.whitelist()
+def fix_workspace_now():
+    """Wrapper to fix workspace - callable via bench execute"""
+    from pos_next.pos_next.api.fix import fix_workspace_now as _fix
+    return _fix()
