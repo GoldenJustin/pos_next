@@ -1,40 +1,39 @@
 import frappe
 
 def setup_after_install():
-    print("POS Next v4.2 - Setup started")
+    print("POS Next v4.3 - Setup started")
     try:
         ensure_module_def()
     except Exception as e:
-        print(f"ModuleDef ensure failed: {e}")
+        print(f"ModuleDef failed: {e}")
     try:
         ensure_desktop_icons()
     except Exception as e:
-        print(f"Desktop Icon ensure failed: {e}")
+        print(f"Desktop Icon failed: {e}")
     try:
         create_roles()
-    except Exception as e:
-        print(f"Role creation failed: {e}")
+    except:
+        pass
     try:
         create_receipt_templates()
-    except Exception as e:
-        print(f"Receipt template creation failed: {e}")
+    except:
+        pass
     try:
         create_custom_fields_if_missing()
-    except Exception as e:
-        print(f"Custom field creation failed: {e}")
+    except:
+        pass
     try:
         create_pos_next_settings()
-    except Exception as e:
-        print(f"Settings creation failed: {e}")
+    except:
+        pass
     try:
-        # Force workspace via code
         from pos_next.api.fix import fix_workspace_now
         fix_workspace_now()
     except Exception as e:
         print(f"Workspace fix failed: {e}")
         import traceback
         traceback.print_exc()
-    print("POS Next v4.2 setup completed")
+    print("POS Next v4.3 setup completed")
 
 def ensure_module_def():
     if not frappe.db.exists("Module Def", "POS Next"):
@@ -46,10 +45,7 @@ def ensure_module_def():
     frappe.db.commit()
 
 def ensure_desktop_icons():
-    try:
-        app_title = frappe.get_hooks("app_title", app_name="pos_next")[0]
-    except:
-        app_title = "POS Next"
+    app_title = "POS Next"
     if not frappe.db.exists("Desktop Icon", {"label": app_title, "icon_type": "App"}):
         try:
             icon_doc = frappe.new_doc("Desktop Icon")
@@ -62,9 +58,8 @@ def ensure_desktop_icons():
             icon_doc.standard = 1
             icon_doc.hidden = 0
             icon_doc.insert(ignore_permissions=True)
-            print(f"Created Desktop Icon App: {app_title}")
         except Exception as e:
-            print(f"Desktop Icon creation failed: {e}")
+            print(f"Desktop Icon failed: {e}")
     else:
         try:
             frappe.db.set_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "link", "/app/pos-next")
@@ -124,17 +119,17 @@ def create_custom_fields_if_missing():
         if not frappe.db.exists("Custom Field", {"dt": f["dt"], "fieldname": f["fieldname"]}):
             try:
                 create_custom_field(f["dt"], f, ignore_validate=True)
-            except Exception as e:
-                print(f"Failed {f['fieldname']}: {e}")
+            except:
+                pass
     frappe.db.commit()
 
 def create_receipt_templates():
     templates = [
-        {"template_name": "Minimal 80mm","paper_size": "80mm","is_escpos": 1,"is_default": 1,"show_logo": 1,"show_qr": 1,"template_html": "<div>Minimal {{ doc.name }} {{ doc.grand_total }}</div>","template_css": ""},
-        {"template_name": "Modern Retail","paper_size": "80mm","is_escpos": 1,"is_default": 0,"show_logo": 1,"show_qr": 0,"template_html": "<div>Modern {{ doc.company }} {{ doc.grand_total }}</div>","template_css": ""},
-        {"template_name": "Restaurant Elegant","paper_size": "80mm","is_escpos": 1,"is_default": 0,"show_logo": 0,"show_qr": 1,"template_html": "<div>Restaurant {{ doc.custom_table }} {{ doc.grand_total }}</div>","template_css": ""},
+        {"template_name": "Minimal 80mm","paper_size": "80mm","is_escpos": 1,"is_default": 1,"show_logo": 1,"show_qr": 1,"template_html": "<div>Minimal {{ doc.name }}</div>","template_css": ""},
+        {"template_name": "Modern Retail","paper_size": "80mm","is_escpos": 1,"is_default": 0,"show_logo": 1,"show_qr": 0,"template_html": "<div>Modern {{ doc.company }}</div>","template_css": ""},
+        {"template_name": "Restaurant Elegant","paper_size": "80mm","is_escpos": 1,"is_default": 0,"show_logo": 0,"show_qr": 1,"template_html": "<div>Restaurant {{ doc.grand_total }}</div>","template_css": ""},
         {"template_name": "Supermarket Detailed","paper_size": "80mm","is_escpos": 1,"is_default": 0,"show_logo": 0,"show_qr": 0,"template_html": "<div>Supermarket {{ doc.name }}</div>","template_css": ""},
-        {"template_name": "A4 Tax Invoice","paper_size": "A4","is_escpos": 0,"is_default": 0,"show_logo": 1,"show_qr": 1,"template_html": "<div>A4 {{ doc.name }} {{ doc.grand_total }}</div>","template_css": ""},
+        {"template_name": "A4 Tax Invoice","paper_size": "A4","is_escpos": 0,"is_default": 0,"show_logo": 1,"show_qr": 1,"template_html": "<div>A4 {{ doc.name }}</div>","template_css": ""},
     ]
     for tmpl in templates:
         if not frappe.db.exists("POS Receipt Template", tmpl["template_name"]):
@@ -145,8 +140,6 @@ def create_receipt_templates():
 
 @frappe.whitelist()
 def seed_demo_for_profile(pos_profile):
-    if not pos_profile:
-        frappe.throw("POS Profile required")
     company = frappe.db.get_value("POS Profile", pos_profile, "company")
     floors = []
     for fname in [f"{pos_profile}-Ground Floor", f"{pos_profile}-First Floor"]:
@@ -182,25 +175,5 @@ def install_demo_data():
 
 @frappe.whitelist()
 def fix_workspace_now():
-    try:
-        from pos_next.api.fix import fix_workspace_now as _fix
-        return _fix()
-    except Exception as e:
-        print(f"Fallback fix: {e}")
-        # fallback direct creation
-        import frappe, json
-        if frappe.db.exists("Workspace", "POS Next"):
-            frappe.db.delete("Workspace", "POS Next")
-            frappe.db.commit()
-        ws = frappe.new_doc("Workspace")
-        ws.name = "POS Next"
-        ws.label = "POS Next"
-        ws.title = "POS Next"
-        ws.icon = "shopping-cart"
-        ws.module = "POS Next"
-        ws.public = 1
-        ws.is_hidden = 0
-        ws.content = "[]"
-        ws.insert(ignore_permissions=True)
-        frappe.db.commit()
-        return "Created minimal workspace POS Next"
+    from pos_next.api.fix import fix_workspace_now as _fix
+    return _fix()
