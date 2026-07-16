@@ -1,7 +1,7 @@
 import frappe
 
 def setup_after_install():
-    print("POS Next v4.3 - Setup started")
+    print("POS Next v4.5 - Setup started")
     try:
         ensure_module_def()
     except Exception as e:
@@ -33,7 +33,7 @@ def setup_after_install():
         print(f"Workspace fix failed: {e}")
         import traceback
         traceback.print_exc()
-    print("POS Next v4.3 setup completed")
+    print("POS Next v4.5 setup completed")
 
 def ensure_module_def():
     if not frappe.db.exists("Module Def", "POS Next"):
@@ -54,7 +54,7 @@ def ensure_desktop_icons():
             icon_doc.app = "pos_next"
             icon_doc.icon = "octicon octicon-package"
             icon_doc.color = "blue"
-            icon_doc.link = "/app/pos-next"
+            icon_doc.link = "/app/pos_next"
             icon_doc.standard = 1
             icon_doc.hidden = 0
             icon_doc.insert(ignore_permissions=True)
@@ -62,7 +62,7 @@ def ensure_desktop_icons():
             print(f"Desktop Icon failed: {e}")
     else:
         try:
-            frappe.db.set_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "link", "/app/pos-next")
+            frappe.db.set_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "link", "/app/pos_next")
             frappe.db.set_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "icon", "octicon octicon-package")
             frappe.db.set_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "hidden", 0)
         except:
@@ -95,8 +95,7 @@ def create_custom_fields_if_missing():
         {"dt":"POS Profile","label":"Enable Table Management","fieldname":"custom_enable_table_management","fieldtype":"Check","default":"1","insert_after":"custom_pos_mode","module":"POS Next"},
         {"dt":"POS Profile","label":"Enable KDS","fieldname":"custom_enable_kds","fieldtype":"Check","default":"1","insert_after":"custom_enable_table_management","module":"POS Next"},
         {"dt":"POS Profile","label":"Enable Customer Display","fieldname":"custom_enable_customer_display","fieldtype":"Check","default":"1","insert_after":"custom_enable_kds","module":"POS Next"},
-        {"dt":"POS Profile","label":"Customer Display Ads","fieldname":"custom_customer_display_ad","fieldtype":"Code","options":"HTML","insert_after":"custom_enable_customer_display","module":"POS Next"},
-        {"dt":"POS Profile","label":"Receipt Template","fieldname":"custom_receipt_template","fieldtype":"Link","options":"POS Receipt Template","insert_after":"custom_customer_display_ad","module":"POS Next"},
+        {"dt":"POS Profile","label":"Receipt Template","fieldname":"custom_receipt_template","fieldtype":"Link","options":"POS Receipt Template","insert_after":"custom_enable_customer_display","module":"POS Next"},
         {"dt":"POS Profile","label":"KDS Refresh","fieldname":"custom_kds_refresh_seconds","fieldtype":"Int","default":"3","insert_after":"custom_receipt_template","module":"POS Next"},
         {"dt":"POS Profile","label":"KOT Printer Map","fieldname":"custom_kot_printer_map","fieldtype":"Table","options":"POS KOT Printer Map","insert_after":"custom_kds_refresh_seconds","module":"POS Next"},
         {"dt":"POS Profile","label":"Enable Weighted Barcode","fieldname":"custom_enable_weighted_barcode","fieldtype":"Check","default":"1","insert_after":"custom_kot_printer_map","module":"POS Next"},
@@ -137,41 +136,6 @@ def create_receipt_templates():
             d.update(tmpl)
             d.insert(ignore_permissions=True)
     frappe.db.commit()
-
-@frappe.whitelist()
-def seed_demo_for_profile(pos_profile):
-    company = frappe.db.get_value("POS Profile", pos_profile, "company")
-    floors = []
-    for fname in [f"{pos_profile}-Ground Floor", f"{pos_profile}-First Floor"]:
-        if not frappe.db.exists("POS Floor", fname):
-            f = frappe.new_doc("POS Floor")
-            f.floor_name = fname
-            f.pos_profile = pos_profile
-            f.company = company
-            f.is_active = 1
-            f.insert(ignore_permissions=True)
-            floors.append(f.name)
-        else:
-            floors.append(fname)
-    for floor in floors:
-        for i in range(1, 5):
-            tname = f"{floor}-T{i}"
-            if not frappe.db.exists("POS Table", tname):
-                t = frappe.new_doc("POS Table")
-                t.table_name = tname
-                t.floor = floor
-                t.pos_profile = pos_profile
-                t.seats = 4
-                t.status = "Available"
-                t.insert(ignore_permissions=True)
-    frappe.db.commit()
-    return {"floors": floors}
-
-@frappe.whitelist()
-def install_demo_data():
-    create_receipt_templates()
-    create_roles()
-    return "Demo installed"
 
 @frappe.whitelist()
 def fix_workspace_now():

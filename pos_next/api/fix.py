@@ -1,12 +1,62 @@
 import frappe
 import json
 
+def create_one_workspace(name, label, title, icon="shopping-cart", module="POS Next"):
+    """Create a single workspace with minimal content, skip if exists"""
+    try:
+        if frappe.db.exists("Workspace", name):
+            # Update to ensure public and icon
+            try:
+                frappe.db.set_value("Workspace", name, "icon", icon)
+                frappe.db.set_value("Workspace", name, "public", 1)
+                frappe.db.set_value("Workspace", name, "is_hidden", 0)
+                frappe.db.set_value("Workspace", name, "module", module)
+                frappe.db.commit()
+            except:
+                pass
+            return name
+        
+        content = [
+            {"id":"header1","type":"header","data":{"text":"POS Operations","col":12}},
+            {"id":"para1","type":"paragraph","data":{"text":"Welcome to POS Next - Modern Retail & Restaurant POS. Use search (Ctrl+K) for POS Invoice, POS Profile, KDS at /kds, Customer Display at /customer-display","col":12}},
+        ]
+        
+        ws = frappe.new_doc("Workspace")
+        ws.name = name
+        ws.label = label
+        ws.title = title
+        ws.icon = icon
+        ws.module = module
+        ws.public = 1
+        ws.is_hidden = 0
+        ws.hide_custom = 0
+        ws.for_user = ""
+        ws.content = json.dumps(content)
+        ws.sequence_id = 10
+        ws.append("roles", {"role": "System Manager"})
+        # Add all roles to ensure visibility
+        for role in ["Sales Manager", "Sales User", "Accounts Manager", "Administrator"]:
+            if frappe.db.exists("Role", role):
+                try:
+                    ws.append("roles", {"role": role})
+                except:
+                    pass
+        
+        ws.insert(ignore_permissions=True)
+        frappe.db.commit()
+        print(f"Created workspace: {name}")
+        return name
+    except Exception as e:
+        print(f"Failed to create workspace {name}: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
+
 @frappe.whitelist()
 def fix_workspace_now():
-    """Force create POS Next workspace via code - minimal then full, handles all edge cases"""
-    print("=== POS Next Workspace Fix v4.4 ===")
+    print("=== POS Next Workspace Fix v4.5 ===")
     
-    # 1. Ensure Module Def
+    # Ensure Module Def
     try:
         if not frappe.db.exists("Module Def", "POS Next"):
             doc = frappe.new_doc("Module Def")
@@ -14,14 +64,13 @@ def fix_workspace_now():
             doc.app_name = "pos_next"
             doc.custom = 1
             doc.insert(ignore_permissions=True)
-            print("Created Module Def POS Next")
+            print("Created Module Def")
     except Exception as e:
         print(f"Module Def error: {e}")
 
-    # 2. Ensure Desktop Icons for ALL apps to prevent NoneType startswith bug in frappe core
+    # Ensure Desktop Icons for all apps to prevent NoneType
     try:
-        from frappe import get_installed_apps
-        for app in get_installed_apps():
+        for app in frappe.get_installed_apps():
             try:
                 titles = frappe.get_hooks("app_title", app_name=app)
                 app_title = titles[0] if titles else app
@@ -32,38 +81,41 @@ def fix_workspace_now():
                     icon_doc.app = app
                     icon_doc.icon = "octicon octicon-package"
                     icon_doc.color = "blue"
-                    icon_doc.link = f"/app/{frappe.scrub(app_title)}"
+                    # Use scrubbed name for link - try both underscore and hyphen, use underscore as primary
+                    link_slug = frappe.scrub(app_title).replace("-", "_")
+                    icon_doc.link = f"/app/{link_slug}"
                     icon_doc.standard = 1
                     icon_doc.hidden = 0
                     icon_doc.insert(ignore_permissions=True)
-                    print(f"Created Desktop Icon for app: {app_title}")
+                    print(f"Created Desktop Icon for {app_title}")
                 else:
-                    # Ensure link starts with /app and icon not None
+                    # Ensure valid
                     try:
-                        frappe.db.set_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "link", f"/app/{frappe.scrub(app_title)}")
-                        # Ensure icon exists
-                        existing_icon = frappe.db.get_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "icon")
-                        if not existing_icon:
-                            frappe.db.set_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "icon", "octicon octicon-package")
-                    except Exception as inner:
-                        print(f"Update icon for {app_title} failed: {inner}")
+                        frappe.db.set_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "icon", "octicon octicon-package")
+                        frappe.db.set_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "hidden", 0)
+                        # Ensure link exists and starts with /app
+                        link_val = frappe.db.get_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "link")
+                        if not link_val or not str(link_val).startswith("/app"):
+                            link_slug = frappe.scrub(app_title).replace("-", "_")
+                            frappe.db.set_value("Desktop Icon", {"label": app_title, "icon_type": "App"}, "link", f"/app/{link_slug}")
+                    except:
+                        pass
             except Exception as e:
-                print(f"App icon ensure for {app} failed: {e}")
+                print(f"App icon for {app} failed: {e}")
     except Exception as e:
-        print(f"Ensure all app icons failed: {e}")
-        import traceback
-        traceback.print_exc()
+        print(f"Ensure all icons failed: {e}")
 
-    # 3. Delete old broken workspace
-    try:
-        if frappe.db.exists("Workspace", "POS Next"):
-            frappe.db.delete("Workspace", "POS Next")
-            frappe.db.commit()
-            print("Deleted old POS Next workspace")
-    except Exception as e:
-        print(f"Delete old workspace failed: {e}")
+    # Delete old broken workspaces
+    for ws_name in ["POS Next", "pos-next", "pos_next", "pos_next - Modern", "POSNext"]:
+        try:
+            if frappe.db.exists("Workspace", ws_name):
+                frappe.db.delete("Workspace", ws_name)
+                print(f"Deleted old workspace: {ws_name}")
+        except:
+            pass
+    frappe.db.commit()
 
-    # 4. Try sync from file
+    # Try sync first (may create from file)
     try:
         from frappe.model.sync import sync_for
         sync_for("pos_next", force=True, reset_permissions=True)
@@ -71,154 +123,30 @@ def fix_workspace_now():
     except Exception as e:
         print(f"sync_for failed: {e}")
 
-    # 5. Create workspace via code - with validation-safe links
-    try:
-        if frappe.db.exists("Workspace", "POS Next"):
-            frappe.db.delete("Workspace", "POS Next")
-            frappe.db.commit()
-        
-        print("Creating NEW full workspace via code...")
-        
-        # Define all possible links with their types, will be filtered by existence
-        possible_links = [
-            {"card_name": "Point of Sale", "label": "Point of Sale", "link_to": "point-of-sale", "link_type": "Page", "type": "Link"},
-            {"card_name": "Point of Sale", "label": "POS Invoices", "link_to": "POS Invoice", "link_type": "DocType", "type": "Link"},
-            {"card_name": "Point of Sale", "label": "POS Opening Shift", "link_to": "POS Opening Shift", "link_type": "DocType", "type": "Link"},
-            {"card_name": "Point of Sale", "label": "POS Closing Shift", "link_to": "POS Closing Shift", "link_type": "DocType", "type": "Link"},
-            {"card_name": "Point of Sale", "label": "POS Profiles", "link_to": "POS Profile", "link_type": "DocType", "type": "Link"},
-            {"card_name": "Cash & Shifts", "label": "Cash Transactions", "link_to": "POS Cash Transaction", "link_type": "DocType", "type": "Link"},
-            {"card_name": "Cash & Shifts", "label": "POS Next Settings", "link_to": "POS Next Settings", "link_type": "DocType", "type": "Link"},
-            {"card_name": "Kitchen", "label": "Kitchen Orders (KOT)", "link_to": "POS KOT", "link_type": "DocType", "type": "Link"},
-            {"card_name": "Restaurant Setup", "label": "POS Floors", "link_to": "POS Floor", "link_type": "DocType", "type": "Link"},
-            {"card_name": "Restaurant Setup", "label": "POS Tables", "link_to": "POS Table", "link_type": "DocType", "type": "Link"},
-            {"card_name": "Receipt & Printing", "label": "Receipt Templates", "link_to": "POS Receipt Template", "link_type": "DocType", "type": "Link"},
-            # Reports - only add if they exist
-            {"card_name": "Sales Reports", "label": "Sales Summary", "link_to": "POS Sales Summary", "link_type": "Report", "is_query_report": 1, "type": "Link"},
-            {"card_name": "Sales Reports", "label": "Product Performance", "link_to": "POS Product Performance", "link_type": "Report", "is_query_report": 1, "type": "Link"},
-            {"card_name": "Sales Reports", "label": "Hourly Sales", "link_to": "POS Hourly Sales", "link_type": "Report", "is_query_report": 1, "type": "Link"},
-            {"card_name": "Sales Reports", "label": "Table Wise Sales", "link_to": "POS Table Wise Sales", "link_type": "Report", "is_query_report": 1, "type": "Link"},
-            {"card_name": "Operations Reports", "label": "X Z Report", "link_to": "POS X Z Report", "link_type": "Report", "is_query_report": 1, "type": "Link"},
-            {"card_name": "Operations Reports", "label": "Cashier Log", "link_to": "POS Cashier Log", "link_type": "Report", "is_query_report": 1, "type": "Link"},
-            {"card_name": "Operations Reports", "label": "KOT Performance", "link_to": "KOT Performance", "link_type": "Report", "is_query_report": 1, "type": "Link"},
-        ]
-        
-        # Filter links - only keep those where link_to exists
-        valid_links = []
-        for link in possible_links:
-            try:
-                lt = link["link_type"]
-                lto = link["link_to"]
-                exists = False
-                if lt == "DocType":
-                    exists = frappe.db.exists("DocType", lto) is not None
-                elif lt == "Report":
-                    exists = frappe.db.exists("Report", lto) is not None
-                elif lt == "Page":
-                    exists = frappe.db.exists("Page", lto) is not None or True  # Pages may not be in DB, allow
-                else:
-                    exists = True
-                
-                if exists:
-                    valid_links.append(link)
-                    print(f"Link OK: {lto} ({lt})")
-                else:
-                    print(f"Link SKIP (not found): {lto} ({lt})")
-            except Exception as e:
-                print(f"Link check failed for {link['link_to']}: {e} - skipping")
-        
-        content = [
-            {"id":"header_ops","type":"header","data":{"text":"<span class=\"h4\">POS Operations</span>","col":12}},
-            {"id":"card_pos","type":"card","data":{"card_name":"Point of Sale","col":4}},
-            {"id":"card_cash","type":"card","data":{"card_name":"Cash & Shifts","col":4}},
-            {"id":"card_kitchen","type":"card","data":{"card_name":"Kitchen","col":4}},
-            {"id":"header_master","type":"header","data":{"text":"<span class=\"h4\">Master Data</span>","col":12}},
-            {"id":"card_restaurant","type":"card","data":{"card_name":"Restaurant Setup","col":4}},
-            {"id":"card_receipt","type":"card","data":{"card_name":"Receipt & Printing","col":4}},
-            {"id":"card_settings","type":"card","data":{"card_name":"Settings & Tools","col":4}},
-            {"id":"header_reports","type":"header","data":{"text":"<span class=\"h4\">Reports & Analytics</span>","col":12}},
-            {"id":"card_sales","type":"card","data":{"card_name":"Sales Reports","col":6}},
-            {"id":"card_ops","type":"card","data":{"card_name":"Operations Reports","col":6}},
-        ]
-        
-        shortcuts = [
-            {"label": "POS Opening Shift","link_to": "POS Opening Shift","type": "DocType","color": "blue","doc_view": "List","stats_filter": "[]"},
-            {"label": "POS Floor","link_to": "POS Floor","type": "DocType","color": "green","doc_view": "List","stats_filter": "[]"},
-            {"label": "Kitchen Orders","link_to": "POS KOT","type": "DocType","color": "orange","doc_view": "List","stats_filter": "{\"kot_status\": [\"not in\", [\"Served\", \"Cancelled\"]]}"},
-            {"label": "POS Next Settings","link_to": "POS Next Settings","type": "DocType","color": "violet","doc_view": "List","stats_filter": "[]"},
-        ]
-        
-        # Filter shortcuts by existence
-        valid_shortcuts = []
-        for sc in shortcuts:
-            if frappe.db.exists("DocType", sc["link_to"]):
-                valid_shortcuts.append(sc)
-        
-        ws = frappe.new_doc("Workspace")
-        ws.name = "POS Next"
-        ws.label = "POS Next"
-        ws.title = "POS Next"
-        ws.icon = "shopping-cart"
-        ws.module = "POS Next"
-        ws.public = 1
-        ws.is_hidden = 0
-        ws.hide_custom = 0
-        ws.for_user = ""
-        ws.content = json.dumps(content)
-        ws.sequence_id = 10
-        
-        # Add links
-        for l in valid_links:
-            ws.append("links", l)
-        
-        # Add shortcuts
-        for s in valid_shortcuts:
-            ws.append("shortcuts", s)
-        
-        # Add roles
-        for role in ["System Manager", "Sales Manager", "Sales User", "Accounts Manager"]:
-            if frappe.db.exists("Role", role):
-                ws.append("roles", {"role": role})
-        
-        ws.insert(ignore_permissions=True)
-        print(f"Created FULL workspace: {ws.name} with {len(valid_links)} links, {len(valid_shortcuts)} shortcuts")
-        
-    except Exception as e:
-        print(f"Full workspace creation failed: {e}")
-        import traceback
-        traceback.print_exc()
-        # Fallback minimal
-        try:
-            if frappe.db.exists("Workspace", "POS Next"):
-                frappe.db.delete("Workspace", "POS Next")
-            ws = frappe.new_doc("Workspace")
-            ws.name = "POS Next"
-            ws.label = "POS Next"
-            ws.title = "POS Next"
-            ws.icon = "package"
-            ws.module = "POS Next"
-            ws.public = 1
-            ws.is_hidden = 0
-            ws.content = "[]"
-            ws.append("roles", {"role": "System Manager"})
-            ws.insert(ignore_permissions=True)
-            print("Created FALLBACK minimal workspace")
-        except Exception as e2:
-            print(f"Fallback also failed: {e2}")
-
+    # Create workspaces for ALL possible slugs to guarantee route works
+    created = []
+    # Primary
+    created.append(create_one_workspace("POS Next", "POS Next", "POS Next", "shopping-cart", "POS Next"))
+    # Hyphen variant
+    created.append(create_one_workspace("pos-next", "pos-next", "pos-next", "shopping-cart", "POS Next"))
+    # Underscore variant
+    created.append(create_one_workspace("pos_next", "pos_next", "pos_next", "shopping-cart", "POS Next"))
+    
     frappe.db.commit()
     frappe.clear_cache()
     
-    exists = frappe.db.exists("Workspace", "POS Next")
-    print(f"Final check exists: {exists}")
-    if exists:
-        ws = frappe.get_doc("Workspace", "POS Next")
-        print(f"WS: {ws.name} icon={ws.icon} public={ws.public} links={len(ws.links)}")
+    # List all workspaces
+    all_ws = frappe.get_all("Workspace", filters={"module": "POS Next"}, fields=["name","icon","public","is_hidden"])
+    print(f"All POS Next workspaces: {all_ws}")
     
-    return f"POS Next workspace fixed v4.4 - exists: {exists} - Links: {len(ws.links) if exists else 0} - Go to /app/pos-next Ctrl+Shift+R"
+    # Create a simple Page to test
+    print("Try accessing via /app/pos_next and /app/pos-next after clear-cache")
+    
+    return f"Fixed workspaces: {created} - All: {all_ws} - Try /app/pos_next and /app/pos-next and /app/POS%20Next with Ctrl+Shift+R"
 
 @frappe.whitelist()
 def check_workspace():
-    ws = frappe.get_all("Workspace", filters={"name":"POS Next"}, fields=["name","icon","public","module","is_hidden"])
+    ws = frappe.get_all("Workspace", filters={"module": "POS Next"}, fields=["name","icon","public","module","is_hidden"])
     return ws
 
 @frappe.whitelist()
