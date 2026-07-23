@@ -123,3 +123,43 @@ def create_receipt_templates():
 def fix_workspace_now():
     from pos_next.api.fix import fix_workspace_now as _fix
     return _fix()
+
+@frappe.whitelist()
+def seed_demo_for_profile(pos_profile):
+    if not pos_profile:
+        frappe.throw("POS Profile required")
+    company = frappe.db.get_value("POS Profile", pos_profile, "company")
+    floors = []
+    for fname in [f"{pos_profile}-Ground Floor", f"{pos_profile}-First Floor", f"{pos_profile}-Terrace"]:
+        if not frappe.db.exists("POS Floor", fname):
+            f = frappe.new_doc("POS Floor")
+            f.floor_name = fname
+            f.pos_profile = pos_profile
+            f.company = company
+            f.is_active = 1
+            f.insert(ignore_permissions=True)
+            floors.append(f.name)
+        else:
+            floors.append(fname)
+    for floor in floors:
+        for i in range(1, 5):
+            tname = f"{floor}-T{i}"
+            if not frappe.db.exists("POS Table", tname):
+                t = frappe.new_doc("POS Table")
+                t.table_name = tname
+                t.floor = floor
+                t.pos_profile = pos_profile
+                t.seats = 4
+                t.status = "Available"
+                t.insert(ignore_permissions=True)
+    frappe.db.commit()
+    return {"floors": floors, "message": f"Demo floors/tables created for {pos_profile}"}
+
+@frappe.whitelist()
+def install_demo_data():
+    create_receipt_templates()
+    create_roles()
+    profiles = frappe.get_all("POS Profile", pluck="name", limit=1)
+    if profiles:
+        seed_demo_for_profile(profiles[0])
+    return "Demo data installed - Floors, Tables, Receipts"
