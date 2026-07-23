@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pos_next"
-version = "5.1.0"
+version = "6.0.0"
 description = "Modern, complete POS for retail, wholesale, supermarket, pharmacy and restaurants - tables, KDS, KOT, customer display, offline, receipts, cash management, reports."
 readme = "README.md"
 requires-python = ">=3.10"
