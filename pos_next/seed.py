@@ -1,39 +1,21 @@
 import frappe
 
 def setup_after_install():
-    print("POS Next v4.5 - Setup started")
+    print("POS Next v5.0 - Setup started")
     try:
         ensure_module_def()
-    except Exception as e:
-        print(f"ModuleDef failed: {e}")
-    try:
         ensure_desktop_icons()
-    except Exception as e:
-        print(f"Desktop Icon failed: {e}")
-    try:
         create_roles()
-    except:
-        pass
-    try:
         create_receipt_templates()
-    except:
-        pass
-    try:
         create_custom_fields_if_missing()
-    except:
-        pass
-    try:
         create_pos_next_settings()
-    except:
-        pass
-    try:
         from pos_next.api.fix import fix_workspace_now
         fix_workspace_now()
     except Exception as e:
-        print(f"Workspace fix failed: {e}")
+        print(f"Setup failed: {e}")
         import traceback
         traceback.print_exc()
-    print("POS Next v4.5 setup completed")
+    print("POS Next v5.0 setup completed")
 
 def ensure_module_def():
     if not frappe.db.exists("Module Def", "POS Next"):
