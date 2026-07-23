@@ -4,7 +4,7 @@ app_publisher = "POS Next Team"
 app_description = "Modern, fast and complete POS for retail, wholesale, supermarket, pharmacy and restaurants - with table management, KDS, customer display, offline sync, advanced receipts and powerful reports."
 app_email = "support@posnext.local"
 app_license = "mit"
-app_version = "6.0.0"
+app_version = "6.1.0"
 app_icon = "octicon octicon-package"
 app_color = "blue"
 
